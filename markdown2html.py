@@ -38,7 +38,7 @@ def convert_markdown_to_html(markdown_file: str, output_file: str) -> None:
             # Get the HTML tag for the corresponding heading level
             html_tag = heading_mapping.get(heading_level, 'h1')
             # Generate HTML tag with text on separate lines
-            html_content.append(f'<{html_tag}>\n{heading_text}\n</{html_tag}>\n')
+            html_content.append(f'<{html_tag}>{heading_text}</{html_tag}>\n')
         elif line.startswith('* '):
             if not in_list:
                 html_content.append('<ul>\n')
