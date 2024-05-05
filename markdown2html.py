@@ -1,12 +1,17 @@
-#!/usr/bin/python3
-
-"""
-markdown2html.py: A script to convert Markdown files to HTML.
-"""
-
 import sys
 import os
+import re
 from typing import List
+
+# Function to parse bold syntax and generate HTML
+def parse_bold(markdown_content: List[str]) -> List[str]:
+    """Parse bold syntax and generate HTML."""
+    html_content = []
+    for line in markdown_content:
+        line = re.sub(r'\[\[(.*?)\]\]', r'<b>\1</b>', line)  # Convert content inside [[...]] to bold
+        line = re.sub(r'\(\((.*?)\)\)', lambda x: x.group(1).replace('c', '').replace('C', ''), line)  # Remove 'c' or 'C' from content inside ((...))
+        html_content.append(line)
+    return html_content
 
 # Function to parse Markdown paragraphs and generate HTML
 def parse_paragraphs(markdown_content: List[str]) -> List[str]:
@@ -92,11 +97,12 @@ def convert_markdown_to_html(markdown_file: str, output_file: str) -> None:
     with open(markdown_file, 'r') as md:
         markdown_content = md.readlines()
 
-    # Parse Markdown headings, lists, and paragraphs
+    # Parse Markdown headings, lists, paragraphs, and bold syntax
     html_content = []
     html_content.extend(parse_headings(markdown_content))
     html_content.extend(parse_lists(markdown_content))
     html_content.extend(parse_paragraphs(markdown_content))
+    html_content = parse_bold(html_content)
     
     # Write HTML content to the output file
     with open(output_file, 'w') as html:
