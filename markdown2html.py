@@ -41,28 +41,28 @@ def convert_markdown_to_html(markdown_file: str, output_file: str) -> None:
             html_content.append(f'<{html_tag}>{heading_text}</{html_tag}>\n')
         elif line.startswith('* '):
             if not in_list:
-                html_content.append('<ul>\n')
+                html_content.append('<ol>\n')
                 in_list = True
             html_content.append(f'    <li>{line.strip("* ").strip()}</li>\n')
         elif line.startswith('- '):
             if not in_ordered_list:
-                html_content.append('<ol>\n')
+                html_content.append('<ul>\n')
                 in_ordered_list = True
             html_content.append(f'    <li>{line.strip("- ").strip()}</li>\n')
         else:
             if in_list:
-                html_content.append('</ul>\n')
+                html_content.append('</ol>\n')
                 in_list = False
             elif in_ordered_list:
-                html_content.append('</ol>\n')
+                html_content.append('</ul>\n')
                 in_ordered_list = False
             html_content.append(line)
 
     # Close the list if it's still open
     if in_list:
-        html_content.append('</ul>\n')
-    elif in_ordered_list:
         html_content.append('</ol>\n')
+    elif in_ordered_list:
+        html_content.append('</ul>\n')
 
     # Write HTML content to the output file
     with open(output_file, 'w') as html:
