@@ -44,11 +44,11 @@ def convert_markdown_to_html(markdown_file: str, output_file: str) -> None:
                 html_content.append('<ul>\n')
                 in_list = True
             html_content.append(f'    <li>{line.strip("* ").strip()}</li>\n')
-        elif line.startswith('1. '):
+        elif line.startswith('- '):
             if not in_ordered_list:
                 html_content.append('<ol>\n')
                 in_ordered_list = True
-            html_content.append(f'    <li>{line.strip("1234567890. ").strip()}</li>\n')
+            html_content.append(f'    <li>{line.strip("- ").strip()}</li>\n')
         else:
             if in_list:
                 html_content.append('</ul>\n')
