@@ -18,7 +18,7 @@ def parse_paragraphs(markdown_content: List[str]) -> List[str]:
             if not in_paragraph:
                 html_content.append('<p>\n')
                 in_paragraph = True
-            html_content.append(f'    {line.strip()}\n')
+            html_content.append(f'    {line.strip()}<br>\n')
         else:
             if in_paragraph:
                 html_content.append('</p>\n')
@@ -47,7 +47,7 @@ def parse_headings(markdown_content: List[str]) -> List[str]:
         if line.startswith('#'):
             heading_level, heading_text = line.strip().split(maxsplit=1)
             html_tag = heading_mapping.get(heading_level, 'h1')
-            html_content.append(f'<{html_tag}>{heading_text}</{html_tag}>\n')
+            html_content.append(f'<{html_tag}>\n{heading_text}\n</{html_tag}>\n')
     return html_content
 
 # Function to parse Markdown unordered and ordered lists and generate HTML
