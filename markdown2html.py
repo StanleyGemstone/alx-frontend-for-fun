@@ -7,6 +7,28 @@ markdown2html.py: A script to convert Markdown files to HTML.
 import sys
 import os
 
+def parse_paragraphs(markdown_content: List[str]) -> List[str]:
+    """Parse Markdown paragraphs and generate HTML."""
+    html_content = []
+    in_paragraph = False
+    for line in markdown_content:
+        if line.strip():  # Check if the line is not empty
+            if not in_paragraph:
+                html_content.append('<p>\n')
+                in_paragraph = True
+            html_content.append(f'    {line.strip()}\n')
+        else:
+            if in_paragraph:
+                html_content.append('</p>\n')
+                in_paragraph = False
+            html_content.append('\n')
+        # Close the paragraph if it's still open
+    if in_paragraph:
+        html_content.append('</p>\n')
+
+    return html_content
+
+
 def convert_markdown_to_html(markdown_file: str, output_file: str) -> None:
     """Converts Markdown file to HTML."""
     # Check if the Markdown file exists
@@ -63,6 +85,9 @@ def convert_markdown_to_html(markdown_file: str, output_file: str) -> None:
         html_content.append('</ol>\n')
     elif in_ordered_list:
         html_content.append('</ul>\n')
+
+    # Parse Markdown paragraphs
+    html_paragraphs = parse_paragraphs(markdown_content)
 
     # Write HTML content to the output file
     with open(output_file, 'w') as html:
