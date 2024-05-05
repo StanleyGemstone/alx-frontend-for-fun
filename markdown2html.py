@@ -14,13 +14,35 @@ def convert_markdown_to_html(markdown_file: str, output_file: str) -> None:
         sys.stderr.write(f"Missing {markdown_file}\n")
         sys.exit(1)
     
-    # Perform Markdown to HTML conversion here
-    # For demonstration purposes, let's assume a simple conversion
+    # Dictionary mapping Markdown heading levels to HTML tags
+    heading_mapping = {
+        '#': 'h1',
+        '##': 'h2',
+        '###': 'h3',
+        '####': 'h4',
+        '#####': 'h5',
+        '######': 'h6'
+    }
+
+    # Perform Markdown to HTML conversion
     with open(markdown_file, 'r') as md:
-        markdown_content = md.read()
-    # For simplicity, just write the Markdown content to the output file
+        markdown_content = md.readlines()
+
+    html_content = []
+    for line in markdown_content:
+        if line.startswith('#'):
+            # Extract the heading level and text
+            heading_level, heading_text = line.strip().split(maxsplit=1)
+            # Get the HTML tag for the corresponding heading level
+            html_tag = heading_mapping.get(heading_level, 'h1')
+            # Generate HTML
+            html_content.append(f'<{html_tag}>{heading_text}</{html_tag}>\n')
+        else:
+            html_content.append(line)
+
+    # Write HTML content to the output file
     with open(output_file, 'w') as html:
-        html.write(markdown_content)
+        html.write(''.join(html_content))
     
     sys.exit(0)
 
