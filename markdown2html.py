@@ -29,16 +29,29 @@ def convert_markdown_to_html(markdown_file: str, output_file: str) -> None:
         markdown_content = md.readlines()
 
     html_content = []
+    in_list = False
     for line in markdown_content:
         if line.startswith('#'):
             # Extract the heading level and text
             heading_level, heading_text = line.strip().split(maxsplit=1)
             # Get the HTML tag for the corresponding heading level
             html_tag = heading_mapping.get(heading_level, 'h1')
-            # Generate HTML
-            html_content.append(f'<{html_tag}>{heading_text}</{html_tag}>\n')
+            # Generate HTML tag with text on separate lines
+            html_content.append(f'<{html_tag}>\n{heading_text}\n</{html_tag}>\n')
+        elif line.startswith('- '):
+            if not in_list:
+                html_content.append('<ul>\n')
+                in_list = True
+            html_content.append(f'    <li>{line.strip("- ").strip()}</li>\n')
         else:
+            if in_list:
+                html_content.append('</ul>\n')
+                in_list = False
             html_content.append(line)
+
+    # Close the list if it's still open
+    if in_list:
+        html_content.append('</ul>\n')
 
     # Write HTML content to the output file
     with open(output_file, 'w') as html:
